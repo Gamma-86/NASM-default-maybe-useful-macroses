@@ -5,42 +5,45 @@
 			%define FALSE 0
 			%define NULL 0
 
-%define force_16_bit TRUE
+	struc ABI_ENUM
+		.reserved resb 1
+		.SYSTEM_V resb 1
+		.CDCEL resb 1
+		.MS64 resb 1
+		.MS32 resb 1
 
+		;.Pascall16
+		;.STDCall16
+		;.FastCall16
+	endstruc
 %define SizeOfPTR 4
 %define BitnessOfPTR SizeOfPTR*8
 %define PTR_BITNESS BitnessOfPTR
-		
+%define USED_ABI_CODE ABI_ENUM.CDCEL
+
 		%if SizeOfPTR = 4
 			bits 32
 			%define PTR_word dword
+			%define FarPTR_present
+			%define SizeOfFarPTR 6
+			%define BitnessOfFarPTR SizeOfFarPTR*8
 		%elif SizeOfPTR = 8
 			bits 64
 			%define PTR_word qword
 		%elif SizeOfPTR = 2
-			%if force_16_bit
-				bits 16
-				%define NearPTR_word word
-				%define FarPTR_word dword
-			%else
-				%error does not support other pointer sizes except 32 and 64
-			%endif
+			bits 16
+			%define NearPTR_word word
+			%define FarPTR_word dword
+			%define FarPTR_present
+			%define SizeOfFarPTR 4
+			%define BitnessOfFarPTR SizeOfFarPTR*8
 		%else
 			%error Bad pointer size
 		%endif
-
-		struc ABI_ENUM
-			.reserved resb 1
-			.SYSTEM_V resb 1
-			.CDCEL resb 1
-			.MS64 resb 1
-			.MS32 resb 1
-		endstruc
 ;		%define ABI_ENUM.SYSTEM_V 1
 ;		%define ABI_ENUM.CDCEL 2
 ;		%define ABI_ENUM.MS64 3
 ;		%define ABI_ENUM.MS32 4
-%define USED_ABI_CODE ABI_ENUM.CDCEL
 
 			%if   USED_ABI_CODE = ABI_ENUM.SYSTEM_V
 				%if SizeOfPTR = 8
@@ -101,7 +104,7 @@
 %ixdefine double     qword
 %ixdefine long_double tword
 
-
+;Settign C types depending on used ABI
 %IF USED_ABI_CODE = ABI_ENUM.SYSTEM_V
 		%define S_Char int8_t
 		%define U_Char uint8_t
@@ -252,7 +255,7 @@
 		%define U_LongLong uint64_t
 		%define U_LongLong_Int uint64_t
 
-		
+
 		%define SizeOfInt 4
 		%define BitnessOfInt SizeOfInt*8
 	%else ;It is 16 bit, so use MS DOS
@@ -343,7 +346,7 @@
 
 
 ;DEFINING FREE REGISTERS FOR CURRENT SIZE OF POINTER
-;AND SOME OTHER POINTER SIZE SPECIFIC REGISTERS
+;AND SOME OTHER POINTER SIZE SPECIFIC REGISTERS(like esp, ebp)
 %if SizeOfPTR = 8
 	%define BP_NATIVE RBP
 	%define SP_NATIVE RSP
@@ -433,6 +436,7 @@
 	%define DEFINE_PTR dq
 %elif SizeOfPTR = 2
 	%define DEFINE_PTR dw
+	%define DEFINE_FAR_PTR(Segment, Offset) dw (Offset), (Segment)
 %else
 	%error Bad pointer size
 %endif
@@ -442,6 +446,12 @@
 %define STACK_ARG_EBP(X) (BP_NATIVE +SizeOfPTR+SizeOfPTR*(X))
 %define LOCAL_VAR(X) (BP_NATIVE -SizeOfPTR*(X))
 
+
+%define STACK_ARG_ESP_FAR(X) (SP_NATIVE +SizeOfPTR*(X) +SizeOfPTR*1)
+%define STACK_ARG_EBP_FAR(X) (BP_NATIVE +SizeOfPTR*(X) +SizeOfPTR*2)
+
+%define STACK_ARG_ESP_INT(X) (SP_NATIVE +SizeOfPTR*(X) + SizeOfPTR*2)
+%define STACK_ARG_EBP_INT(X) (BP_NATIVE +SizeOfPTR*(X) + SizeOfPTR*3)
 ;DEFINING ARGUMENTS LOCATION FOR CURRENT POINTER SIZE
 
 %if   SizeOfPTR = 4
@@ -603,7 +613,38 @@
 
 	%else
 		%error Could not define Arguments location for current combination of ABI and pointer size
-	%endif	
+	%endif
+%elif SizeOfPTR = 2
+	%if USED_ABI_CODE = ABI_ENUM.CDCEL
+
+		%assign i 1
+		%rep 10
+			%define STACK_ARG%[i]_SP        [STACK_ARG_ESP(i)]
+				%define STACK_ARG1_SP8  byte[STACK_ARG_ESP(i)]
+				%define STACK_ARG1_SP16 word[STACK_ARG_ESP(i)]
+
+			%define STACK_ARG1_SP_FAR       [STACK_ARG_ESP_FAR(i)]
+				%define STACK_ARG1_SP_FAR8  byte[STACK_ARG_ESP_FAR(i)]
+				%define STACK_ARG1_SP_FAT16 word[STACK_ARG_ESP_FAR(i)]
+
+			%define STACK_ARG1_SP_INT           [STACK_ARG_ESP_INT(i)]
+				%define STACK_ARG1_SP_INT8  byte[STACK_ARG_ESP_INT(i)]
+				%define STACK_ARG1_SP_INT16 word[STACK_ARG_ESP_INT(i)]
+
+			%define STACK_ARG1_BP           [STACK_ARG_EBP(i)]
+				%define STACK_ARG1_BP8  byte[STACK_ARG_EBP(i)]
+				%define STACK_ARG1_BP16 word[STACK_ARG_EBP(i)]
+
+			%define STACK_ARG1_BP_FAR           [STACK_ARG_EBP_FAR(i)]
+				%define STACK_ARG1_BP_FAR8  byte[STACK_ARG_EBP_FAR(i)]
+				%define STACK_ARG1_BP_FAR16 word[STACK_ARG_EBP_FAR(i)]
+
+			%define STACK_ARG1_BP_INT           [STACK_ARG_EBP_INT(i)]
+				%define STACK_ARG1_BP_INT8  byte[STACK_ARG_EBP_INT(i)]
+				%define STACK_ARG1_BP_INT16 word[STACK_ARG_EBP_INT(i)]
+		%endrep
+		%undef i
+	%endif
 %else
 	%error Cound not define Arguments location for current Pointer size in bytes
 %endif
@@ -876,7 +917,8 @@
 
 
 %macro ALIGN16_CALL_STACK__ArgsAmount 1
-	%assign ArgsSizeBytes %1*SizeOfPTR
+	%push CONTEXT
+	%assign ArgsSizeBytes (%1)*SizeOfPTR
 	%assign SubAmount ArgsSizeBytes&0xF
 	%assign SubAmount 16-SubAmount
 	%assign SubAmount SubAmount&0xF
@@ -885,6 +927,7 @@
 
 	%undef ArgsSizeBytes
 	%undef SubAmount
+	%pop
 %endmacro
 
 
@@ -893,16 +936,33 @@
 %endmacro
 
 
-%macro ALIGN16_STACK_FLOOR 0
-	and   SP_NATIVE, ~(0xF)
+%macro ALIGN16_REG_FLOOR 1
+	and   %1, ~(0xF)
+%endmacro
+%macro ALIGN16_REG_ROOF 1
+add   %1, 15
+and   %1, 0xF
+%endmacro
+%macro ALIGN_16_STACK_FLOOR 0
+	ALIGN16_REG_FLOOR SP_NATIVE
+%endmacro
+%macro ALIGN16_STACK_ROOF 0
+	ALIGN16_REG_ROOF SP_NATIVE
 %endmacro
 
 
-%macro ALIGN16_STACK_ROOF__freeReg 1
-mov %1, SP_NATIVE
-	neg %1
-	and %1, 0xF
-add SP_NATIVE, %1
+%macro ALIGN8_REG_FLOOR 1
+	and   %1, 7
+%endmacro
+%macro ALIGN8_REG_ROOF 1
+	add   %1, 7
+	and   %1, 7
+%endmacro
+%macro ALIGN8_STACK_FLOOR 0
+	ALIGN8_REG_FLOOR SP_NATIVE
+%endmacro
+%macro ALIGN8_STACK_ROOF 0
+	ALIGN8_REG_ROOF SP_NATIVE
 %endmacro
 
 %macro COMPARE 2
@@ -931,7 +991,8 @@ add SP_NATIVE, %1
 %define What_Address_does_Lods_use DS_SI_address
 %define What_Destination_segment_string_instructions_use es_segment
 %define What_Source_segment_string_nstructions_use ds_segment
-
+%define HOW_Is_Far_Pointer_Stored_in_RAM Offset_IsFirst_In_LowerAddresses_Then_Segment
+%define HOW_ToPush_FarPointer_ToRAM First_Push_Segment_Then_Offset
 
 %include "NASM_advanced_macroses32.nasm"
 
