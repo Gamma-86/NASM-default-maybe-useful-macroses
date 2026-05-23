@@ -141,14 +141,17 @@ endstruc
     %define THE_ARGUMENT_TO_CHECK %1
 %endmacro
 
-%macro CASE_MOD256 1
+%macro CASE_MOD256 2
     %ifnctx CASE_MOD256_START_CONTEXT
         %error cant make case when no case start
     %endif
     %if %1>255
         %error dont support cases above 255
     %endif
-
+    %ifnder CASE_MOD256_WAS_USED_BEFORE
+        %note CASE_MOD256 uses 2 arguments 1-what to test for switch, 2 - AX in which it fits
+        %define CASE_MOD256_WAS_USED_BEFORE
+    %endif
 
     %xdefine CASE_INDEX %1
 
@@ -176,6 +179,13 @@ endstruc
     jmp   %$CASE_MOD256_LABEL_ABSOLUTE_END
 %endmacro
 
+%macro CASE_MOD256_BREAK_COND_JMP 1
+    %ifnctx CASE_MOD256_START_CONTEXT
+        %error cant break out of case when case didnt start
+    %endif
+    j%+%1   %$CASE_MOD256_LABEL_ABSOLUTE_END    
+%endmacro
+
 %macro CASE_MOD256_END 0
     %ifnctx CASE_MOD256_START_CONTEXT
         %error cant end case when no case start 
@@ -189,7 +199,12 @@ endstruc
         %ifdef CASE_MOD256_DEFAULT_CASE_EXISTS
             jmp   %$CASE_MOD256_LABEL_DEFAULT
         %else
-            jmp   %$CASE_MOD256_LABEL_ABSOLUTE_END
+            %assign I 0
+            %rep 256
+                %ifdef CASE_MOD256_INDEX_EXIST_%[I]
+                    JMP %$CASE_MOD256_LABEL_%[I]
+                %endif
+            %endrep
         %endif
     %else
         push  AX_PTRSIZE
