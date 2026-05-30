@@ -159,6 +159,21 @@ endstruc
         %error dont support cases above 255
     %endif
 
+    %ifidni %1, rax
+        %if __?BITS?__ < 64
+            %error You gave 64 bit register evn though code is not 64 bit
+        %endif
+    %ifidni %1, eax
+        %if __?BITS?__ < 32
+            %error You gave 32 bit register even though code is not 32 bit 
+        %endif
+    %ifidni %1, ax
+    %ifidni %1, al
+    %ifidni %1, ah
+    %else
+        %error The register in CASE_MOD256_FUN is not eax variant
+    %endif
+
     %xdefine CASE_INDEX %1
     %if   CASE_MOD256_CASES_AMOUNT > 0
         jmp   %$CASE_MOD256_LABEL_ABSOLUTE_END

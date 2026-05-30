@@ -286,7 +286,6 @@
 		%define BitnessOfInt SizeOfInt*8
 	%endif
 %endif
-
 ;Defining the most basic register aliases
 
 %define FREE_REG1_64 rax
@@ -978,6 +977,202 @@ and   %1, 0xF
 	not   %1
 %endmacro
 
+%macro Is_It_General_Register64 1
+	%IFIDNI %1, rax
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rbx
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rcx
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rdx
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rsi
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rdi
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rbp
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, rsp
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r8
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r9
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r10
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r11
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r12
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r13
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r14
+		%define Is_It_General_Register64_BOOL 1
+	%elifidni %1, r15
+		%define Is_It_General_Register64_BOOL 1
+	%else
+		%define Is_It_General_Register64_BOOL 0
+	%endif
+%endmacro
+
+%macro Is_It_General_Register32 1
+	%IFIDNI %1, eax
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, ebx
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, ecx
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, edx
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, esi
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, edi
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, ebp
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, esp
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r8d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r9d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r10d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r11d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r12d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r13d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r14d
+		%define Is_It_General_Register32_BOOL 1
+	%elifidni %1, r15d
+		%define Is_It_General_Register32_BOOL 1
+	%else
+		%define Is_It_General_Register32_BOOL 0
+	%endif
+%endmacro
+
+%macro Is_It_General_Register16 1
+	%IFIDNI %1, ax
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, bx
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, cx
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, dx
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, si
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, di
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, bp
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, sp
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r8w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r9w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r10w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r11w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r12w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r13w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r14w
+		%define Is_It_General_Register16_BOOL 1
+	%elifidni %1, r15w
+		%define Is_It_General_Register16_BOOL 1
+	%else
+		%define Is_It_General_Register16_BOOL 0
+	%endif
+	
+%endmacro
+
+%macro Is_It_General_Register8 1
+	%IFIDNI %1, al
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, ah
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, bl
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, bh
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, cl
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, ch
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, dl
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, dh
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, sil
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, dil
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, bpl
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, spl
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r8l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r9l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r10l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r11l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r12l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r13l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r14l
+		%define Is_It_General_Register8_BOOL 1
+	%elifidni %1, r15l
+		%define Is_It_General_Register8_BOOL 1
+	%else
+		%define Is_It_General_Register8_BOOL 0
+	%endif
+%endmacro
+
+%macro Is_It_General_Register 1
+	Is_It_General_Register8 %1
+	Is_It_General_Register16 %1
+	Is_It_General_Register32 %1
+	Is_It_General_Register64 %1
+
+	%xdefine Is_It_General_Register (Is_It_General_Register8_BOOL || Is_It_General_Register16_BOOL || Is_It_General_Register32_BOOL || Is_It_General_Register64_BOOL)
+
+	%undef Is_It_General_Register8_BOOL
+	%undef Is_It_General_Register16_BOOL
+	%undef Is_It_General_Register32_BOOL
+	%undef Is_It_General_Register64_BOOL
+%endmacro
+
+%macro Is_It_MMX_Register 1
+	%ifidni %1, mm0
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm1
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm2
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm3
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm4
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm5
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm6
+		%define Is_It_MMX_Register_BOOL 1
+	%elifidni %1, mm7
+		%define Is_It_MMX_Register_BOOL 1
+	%else
+		%define Is_It_MMX_Register_BOOL 0
+	%endif
+%endmacro
 
 %define What_Segment_Does_BP_use ss_segment
 %define What_Segment_Does_SP_use ss_segment
@@ -994,7 +1189,7 @@ and   %1, 0xF
 %define HOW_Is_Far_Pointer_Stored_in_RAM Offset_IsFirst_In_LowerAddresses_Then_Segment
 %define HOW_ToPush_FarPointer_ToRAM First_Push_Segment_Then_Offset
 
-%include "NASM_advanced_macroses32.nasm"
+;%include "NASM_advanced_macroses32.nasm"
 
 
 %endif
