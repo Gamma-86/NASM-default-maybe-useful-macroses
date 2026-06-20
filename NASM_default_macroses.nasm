@@ -644,6 +644,9 @@ and   %1, 0xF
 %elif NASM_DEFAULT_MACROSES_USED_ABI_CODE = ABI_ENUM.MS64
 %include "NASM_default_macroses_ms64.nasm"
 
+%elif NASM_DEFAULT_MACROSES_USED_ABI_CODE = ABI_ENUM.SYSTEM_V
+%include "NASM_default_macroses_sysV.nasm"
+
 %endif
 
 
