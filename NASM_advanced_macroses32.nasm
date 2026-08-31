@@ -75,9 +75,7 @@ endstruc
 %define NotParity np
 
 %define Overflow o
-%defien NotOverflow no
-
-%define 
+%define NotOverflow no
 
 %macro IF_COND_START 1
     %push IF_COND_CONTEXT
