@@ -408,6 +408,17 @@ and   %1, 0xF
 	not   %1
 %endmacro
 
+%macro CALL_COND 2
+	j%-1   %$IF_NOT_CONDITION
+	call  %2
+%$IF_NOT_CONDITION:
+%endmacro
+
+
+
+
+
+
 %macro Is_It_General_Register64 1
 	%IFIDNI %1, rax
 		%define Is_It_General_Register64_BOOL 1
