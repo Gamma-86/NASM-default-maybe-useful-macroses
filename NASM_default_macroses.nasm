@@ -658,6 +658,8 @@ and   %1, 0xF
 %elif NASM_DEFAULT_MACROSES_USED_ABI_CODE = ABI_ENUM.SYSTEM_V
 %include "NASM_default_macroses_sysV.nasm"
 
+%elif __?BITS?__=16
+%include "NASM_default_macroses_IA16.nasm"
 %endif
 
 
