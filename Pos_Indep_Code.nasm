@@ -1,3 +1,12 @@
+%ifndef POS_INDEP_CODE_SENTRY_NASM
+%define POS_INDEP_CODE_SENTRY_NASM
+
+
+
+
+
+
+
 %if (__?BITS?__) = 64
 
     %macro GET_LABEL_FLAT_ADDRESS_POS_INDEP 1
@@ -34,5 +43,14 @@
         lea    bx, [bx - .next_eip + %1]
         xchg   bx, ax
     %endmacro
+
+%endif
+
+
+
+
+
+
+
 
 %endif
