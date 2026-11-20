@@ -56,7 +56,7 @@ endstruc
 struc UpCS_reg
     .WaitBitfiel resb 3
     .Zeroed resb 3
-    .Adrs_17_10 resb 8
+    .FirstAdrs_17_10 resb 8
     .Zeroed2 resb 2
 endstruc
 %define UpCS_AllowMask 0b00_11111111_000_111
@@ -64,7 +64,7 @@ endstruc
 struc LowCS_Reg
     .WaitBitfiel resb 3
     .Zeroed resb 3
-    .Adrs_17_10 resb 8
+    .LastAdrs_17_10 resb 8
     .Zeroed2 resb 2
 endstruc
 %define LowCS_AllowMask 0b00_11111111_000_111
