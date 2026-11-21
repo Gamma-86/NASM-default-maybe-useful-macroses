@@ -90,7 +90,7 @@ struc CSOther_Reg
     .PCS456_Waitfield resb 3
     .Zeroed resb 3
     .PCSIsMMIO resb 1
-    .PCS56_IsNot_A1_A2 resb 1
+    .PCS56_IsNot_A12 resb 1
     .MCSis8k resb 1
     .MCSis16k resb 1
     .MCSis32k resb 1
