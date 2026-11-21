@@ -38,7 +38,7 @@ struc ChipSel_Block
     .LowCS resb 2
     .PortCS resb 2
     .MemCSBase resb 2
-    .CSOther_Reg resb 2
+    .CSOther resb 2
 endstruc
 struc ChipSel_RdyBitsEnum
     .AtLeast0 resb 1
@@ -54,7 +54,7 @@ endstruc
 
 
 struc UpCS_reg
-    .WaitBitfiel resb 3
+    .WaitBitfield resb 3
     .Zeroed resb 3
     .FirstAdrs_17_10 resb 8
     .Zeroed2 resb 2
@@ -62,7 +62,7 @@ endstruc
 %define UpCS_AllowMask 0b00_11111111_000_111
 
 struc LowCS_Reg
-    .WaitBitfiel resb 3
+    .WaitBitfield resb 3
     .Zeroed resb 3
     .LastAdrs_17_10 resb 8
     .Zeroed2 resb 2
@@ -71,7 +71,7 @@ endstruc
 
 
 struc PortCS_Reg
-    .WaitBitfiel resb 3
+    .WaitBitfield resb 3
     .Zeroed resb 3
     .Adrs_19_10 resb 10
 endstruc
@@ -79,7 +79,7 @@ endstruc
 
 
 struc MemCSBase_Reg
-    .WaitBitfiel resb 3
+    .WaitBitfield resb 3
     .Zeroed resb 3
     .StrangeBits resb 3
     .Adrs_19_13 resb 7
@@ -87,7 +87,7 @@ endstruc
 %define MemCSBase_AllowMask 0b1111111_000000_111
 
 struc CSOther_Reg
-    .WaitBitfiel resb 3
+    .PCS456_Waitfield resb 3
     .Zeroed resb 3
     .PCSIsMMIO resb 1
     .PCS56_IsNot_A1_A2 resb 1
